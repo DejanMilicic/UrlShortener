@@ -15,6 +15,7 @@
     <Compile Include="DataModel.fs" />
     <Compile Include="Database.fs" />
     <Compile Include="Authentication.fs" />
+    <Compile Include="Persistence.fs" />
     <Compile Include="Remoting.fs" />
     <Compile Include="Client.fs" />
     <Compile Include="Site.fs" />
@@ -29,13 +30,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="paket.references" />
+  </ItemGroup>
   <Target Name="CopyLib" BeforeTargets="BeforeCompile">
-    <Copy SourceFiles="../packages/System.Data.SQLite.Core/runtimes/win-x64/native/netstandard2.0/SQLite.Interop.dll"
-          DestinationFolder="../packages/System.Data.SQLite.Core/native/netstandard2.0/x64"
-          SkipUnchangedFiles="true" />
-    <Copy SourceFiles="../packages/System.Data.SQLite.Core/runtimes/win-x86/native/netstandard2.0/SQLite.Interop.dll"
-          DestinationFolder="../packages/System.Data.SQLite.Core/native/netstandard2.0/x86"
-          SkipUnchangedFiles="true" />
+    <Copy SourceFiles="../packages/System.Data.SQLite.Core/runtimes/win-x64/native/netstandard2.0/SQLite.Interop.dll" DestinationFolder="../packages/System.Data.SQLite.Core/native/netstandard2.0/x64" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="../packages/System.Data.SQLite.Core/runtimes/win-x86/native/netstandard2.0/SQLite.Interop.dll" DestinationFolder="../packages/System.Data.SQLite.Core/native/netstandard2.0/x86" SkipUnchangedFiles="true" />
   </Target>
   <Import Project="..\.paket\Paket.Restore.targets" />
 </Project>

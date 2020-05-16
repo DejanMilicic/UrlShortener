@@ -10,3 +10,4 @@ nuget WebSharper.OAuth
 nuget SQLProvider
 nuget System.Data.SQLite.Core storage: packages
 nuget Evolve ~> 1.8
+nuget RavenDB.Embedded

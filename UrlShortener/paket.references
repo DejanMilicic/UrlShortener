@@ -5,3 +5,4 @@ WebSharper.OAuth
 SQLProvider
 System.Data.SQLite.Core
 Evolve
+RavenDB.Embedded
