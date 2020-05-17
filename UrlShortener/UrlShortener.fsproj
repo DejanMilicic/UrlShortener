@@ -13,9 +13,9 @@
   <ItemGroup>
     <Content Include="db\migrations\*.sql" CopyToPublishDirectory="Always" />
     <Compile Include="DataModel.fs" />
+    <Compile Include="Persistence.fs" />
     <Compile Include="Database.fs" />
     <Compile Include="Authentication.fs" />
-    <Compile Include="Persistence.fs" />
     <Compile Include="Remoting.fs" />
     <Compile Include="Client.fs" />
     <Compile Include="Site.fs" />

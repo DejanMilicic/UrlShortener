@@ -80,7 +80,7 @@ module User =
     [<JavaScript>]
     type Data =
         {
-            UserId: Id
+            UserId: string
             FullName: string
         }
 

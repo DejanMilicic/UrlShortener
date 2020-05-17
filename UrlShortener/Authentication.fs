@@ -42,7 +42,7 @@ let FacebookProvider (config: IConfiguration) =
                     // 2. Match it with a user in our database, or create one;
                     let! userId = ctx.Db.GetOrCreateFacebookUser(fbUserData.id, fbUserData.name)
                     // 3. Log the user in;
-                    do! ctx.UserSession.LoginUser(userId.ToString("N"))
+                    do! ctx.UserSession.LoginUser(userId.ToString())
                     // 4. Redirect them to the home page.
                     return! Content.RedirectTemporary Home
                 }
@@ -60,13 +60,13 @@ let FacebookProvider (config: IConfiguration) =
     )
 
 /// Get the user id of the currently logged in user.
-let GetLoggedInUserId (ctx: Web.Context) : Async<User.Id option> = async {
+let GetLoggedInUserId (ctx: Web.Context) : Async<string option> = async {
     match! ctx.UserSession.GetLoggedInUser() with
     | None -> return None
     | Some s ->
-        match Guid.TryParse(s) with
-        | true, id -> return Some id
-        | false, _ ->
+        match s <> "" with
+        | true -> return Some s
+        | false ->
             do! ctx.UserSession.Logout()
             return None
 }
