@@ -1,8 +1,6 @@
 ﻿module UrlShortener.Database
 
 open System
-open FSharp.Data.Sql
-open FSharp.Data.Sql.Transactions
 open Microsoft.Extensions.Configuration
 open Microsoft.Extensions.Logging
 open Microsoft.Extensions.DependencyInjection
@@ -12,17 +10,6 @@ open UrlShortener.DataModel
 open System.Linq
 open Microsoft.FSharp.Collections
 open Raven.Client.Documents
-
-type Sql = SqlDataProvider<
-            // Connect to SQLite using System.Data.Sqlite.
-            Common.DatabaseProviderTypes.SQLITE,
-            SQLiteLibrary = Common.SQLiteLibrary.SystemDataSQLite,
-            ResolutionPath = const(__SOURCE_DIRECTORY__ + "/../packages/System.Data.SQLite.Core/lib/netstandard2.0/"),
-            // Store the database file in db/urlshortener.db.
-            ConnectionString = const("Data Source=" + __SOURCE_DIRECTORY__ + "/db/urlshortener.db"),
-            // Store the schema as JSON so that the compiler doesn't need the database to exist.
-            ContextSchemaPath = const(__SOURCE_DIRECTORY__ + "/db/urlshortener.schema.json"),
-            UseOptionTypes = true>
 
 [<CLIMutable>]
 type User = {
@@ -44,24 +31,6 @@ let tryHead (ls:seq<'a>) : option<'a>  = ls |> Seq.tryPick Some
 /// ASP.NET Core service that creates a new data context every time it's required.
 type Context(config: IConfiguration, logger: ILogger<Context>) =
     do logger.LogInformation("Creating db context")
-
-    let db =
-        let connString = config.GetSection("ConnectionStrings").["UrlShortener"]
-        Sql.GetDataContext(connString, TransactionOptions.Default)
-
-    /// Apply all migrations.
-    member this.Migrate() =
-        try
-            use ctx = db.CreateConnection()
-            let evolve =
-                new Evolve.Evolve(ctx, logger.LogInformation,
-                    Locations = ["db/migrations"],
-                    IsEraseDisabled = true)
-            evolve.Migrate()
-        with ex ->
-            logger.LogCritical("Database migration failed: {0}", ex)
-
-
 
     /// Get the user for this Facebook user id, or create a user if there isn't one.
     member this.GetOrCreateFacebookUser(fbUserId: string, fbUserName: string) : Async<string> = async {

@@ -19,8 +19,6 @@ type Startup() =
     member this.Configure(app: IApplicationBuilder, env: IHostingEnvironment, db: Database.Context) =
         if env.IsDevelopment() then app.UseDeveloperExceptionPage() |> ignore
 
-        db.Migrate()
-
         app.UseAuthentication()
             .UseStaticFiles()
             .UseWebSharper()
