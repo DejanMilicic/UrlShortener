@@ -2,7 +2,4 @@ WebSharper.FSharp
 WebSharper.AspNetCore
 WebSharper.Mvu
 WebSharper.OAuth
-SQLProvider
-System.Data.SQLite.Core
-Evolve
 RavenDB.Embedded
