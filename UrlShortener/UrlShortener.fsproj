@@ -11,7 +11,6 @@
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="db\migrations\*.sql" CopyToPublishDirectory="Always" />
     <Compile Include="DataModel.fs" />
     <Compile Include="Persistence.fs" />
     <Compile Include="Database.fs" />

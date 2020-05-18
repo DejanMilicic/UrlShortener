@@ -1,4 +1,0 @@
-CREATE TABLE `redirection` (
-	`id`	INTEGER NOT NULL PRIMARY KEY,
-	`url`	TEXT NOT NULL
-);
