@@ -21,7 +21,7 @@ let Router = Router.Infer<EndPoint>()
 module Link =
 
     /// Link id as stored in the database.
-    type Id = int64
+    type Id = string
 
     /// Link id as shown in URLs.
     type Slug = string
@@ -39,7 +39,8 @@ module Link =
     /// Create a link slug from a link id.
     /// Uses base64-URL encoding.
     let EncodeLinkId (linkId: Id) : Slug =
-        let bytes = BitConverter.GetBytes(linkId)
+        let int = Convert.ToInt64(linkId)
+        let bytes = BitConverter.GetBytes(int)
         Convert.ToBase64String(bytes)
             .Replace("=", "")
             .Replace('+', '-')
@@ -49,20 +50,20 @@ module Link =
     /// Uses base64-URL decoding.
     let TryDecodeLinkId (slug: Slug) : Id option =
         if String.IsNullOrEmpty slug then
-            Some 0L
+            Some ""
         else
             let s =
                 slug.Replace('-', '+')
                     .Replace('_', '/')
                 + (String.replicate (4 - slug.Length % 4) "=")
-            try BitConverter.ToInt64(Convert.FromBase64String s, 0) |> Some
+            try BitConverter.ToInt64(Convert.FromBase64String s, 0).ToString() |> Some
             with _ -> None
 
     /// Create a new random link id.
     let NewLinkId() : Id =
         let bytes = Array.zeroCreate<byte> 8
         Random().NextBytes(bytes)
-        BitConverter.ToInt64(bytes, 0)
+        BitConverter.ToInt64(bytes, 0).ToString()
 
     /// Create a full URL from a link slug.
     let SlugToFullUrl (ctx: Web.Context) (slug: Slug) : string =

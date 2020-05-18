@@ -36,7 +36,7 @@ type Redirection = {
     Id : Link.Id
     CreatorId : string
     Url : string
-    VisitCount : int64
+    mutable VisitCount : int64
 }
 
 let tryHead (ls:seq<'a>) : option<'a>  = ls |> Seq.tryPick Some
@@ -124,19 +124,22 @@ type Context(config: IConfiguration, logger: ILogger<Context>) =
     /// Get the url pointed to by the given slug, if any,
     /// and increment its visit count.
     member this.TryVisitLink(slug: Link.Slug) : Async<string option> = async {
+        use session = Persistence.Store.OpenSession()
+        
         match Link.TryDecodeLinkId slug with
         | None -> return None
         | Some linkId ->
             let link =
-                query { for l in db.Main.Redirection do
-                        where (l.Id = linkId)
-                        select (Some l)
-                        headOrDefault }
+                session.Query<Redirection>()
+                          .Where(fun l -> l.Id = linkId)
+                          |> seq |> tryHead
+
             match link with
             | None -> return None
             | Some link ->
-                link.VisitCount <- link.VisitCount + 1L
-                do! db.SubmitUpdatesAsync()
+                let newVisitorCount = link.VisitCount + 1L
+                link.VisitCount <- newVisitorCount
+                session.SaveChanges()
                 return Some link.Url
     }
 
