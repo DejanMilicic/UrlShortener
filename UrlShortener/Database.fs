@@ -137,7 +137,9 @@ type Context(config: IConfiguration, logger: ILogger<Context>) =
             match link with
             | None -> return None
             | Some link ->
-                session.Advanced.Patch<Redirection, int64>(link.Id, (fun x -> x.VisitCount), link.VisitCount + 1L)
+                session.Advanced.Evict(link)
+                let newLink = { link with VisitCount = link.VisitCount + 1L }
+                session.Advanced.Patch<Redirection, int64>(newLink.Id, (fun x -> x.VisitCount), newLink.VisitCount)
                 session.SaveChanges()
                 return Some link.Url
     }
