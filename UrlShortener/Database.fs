@@ -36,7 +36,7 @@ type Redirection = {
     Id : Link.Id
     CreatorId : string
     Url : string
-    mutable VisitCount : int64
+    VisitCount : int64
 }
 
 let tryHead (ls:seq<'a>) : option<'a>  = ls |> Seq.tryPick Some
@@ -137,8 +137,7 @@ type Context(config: IConfiguration, logger: ILogger<Context>) =
             match link with
             | None -> return None
             | Some link ->
-                let newVisitorCount = link.VisitCount + 1L
-                link.VisitCount <- newVisitorCount
+                session.Advanced.Patch<Redirection, int64>(link.Id, (fun x -> x.VisitCount), link.VisitCount + 1L)
                 session.SaveChanges()
                 return Some link.Url
     }
