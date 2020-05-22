@@ -8,6 +8,7 @@ open WebSharper.UI.Html
 open WebSharper.UI.Client
 open WebSharper.Mvu
 open UrlShortener.DataModel
+open WebSharper.UI.Templating
 
 /// Defines the model of this client side page,
 /// ie. the data types that represent the state and its transitions.
@@ -188,8 +189,10 @@ module View =
             ]
         ]
 
+    type MasterTemplate = Template<"Main.html", ClientLoad.FromDocument>
+
     /// The view for the full page content.
-    let Page dispatch (state: View<State>) =
+    let Render (dispatch: Message -> unit) (state: View<State>) =
         Doc.Concat [
             h1 [attr.``class`` "title has-text-centered"] [
                 text ("Welcome, " + state.V.User.FullName + "!")
@@ -255,6 +258,6 @@ open Update
 
 /// Binds together the model, the view and the update.
 let MyLinks (user: User.Data) =
-    App.Create (InitialState user) Update Page
+    App.Create (InitialState user) Update Render
     |> App.WithInitAction (Command (fun dispatch -> dispatch Refresh))
     |> App.Run
