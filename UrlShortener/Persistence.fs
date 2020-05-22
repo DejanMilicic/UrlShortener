@@ -2,8 +2,8 @@
 
 open Raven.Client.Documents
 open Raven.Client.Documents.Indexes
-open Raven.Embedded
 open System.Reflection
+open System.Security.Cryptography.X509Certificates
 
 module Persistence =
   let configure (store : IDocumentStore) =
@@ -12,14 +12,10 @@ module Persistence =
       IndexCreation.CreateIndexes(Assembly.GetExecutingAssembly(), store)
 
   let Store = 
-      let serverOptions = new ServerOptions()
-      serverOptions.ServerUrl <- "http://127.0.0.1:8080"
-      serverOptions.ServerDirectory <- "C:\RavenDB\RavenDB-5.0.0-nightly-20200312-0631-windows-x64\Server"
-
-      EmbeddedServer.Instance.StartServer(serverOptions);
-      let store = EmbeddedServer.Instance.GetDocumentStore("UrlShortener")
-      //store.Database <- "UrlShortener"
-      //store.Certificate <- new X509Certificate2("free.dejanmilicic.client.certificate.pfx");
+      let store = new DocumentStore ()
+      store.Urls <-  [|"https://a.free.dejanmilicic.ravendb.cloud/"|]
+      store.Database <- "UrlShortener"
+      store.Certificate <- new X509Certificate2("free.dejanmilicic.client.certificate.pfx");
       configure store
       store
 

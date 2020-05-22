@@ -7,4 +7,4 @@ nuget WebSharper.AspNetCore
 nuget WebSharper.FSharp
 nuget WebSharper.Mvu
 nuget WebSharper.OAuth
-nuget RavenDB.Embedded
+nuget RavenDB.Client

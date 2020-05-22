@@ -9,3 +9,5 @@ appsettings.*.json
 packages/
 *.db
 lib/
+
+*.pfx
